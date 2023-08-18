@@ -19,5 +19,34 @@ def insert():
         mydb.commit()
         return jsonify(str("successfully inserted"))
 
+# Update the record
+@app.route("/update", methods = ['POST'])
+def update():
+    if request.method == 'POST':
+        get_name = request.json["get_name"]
+        cursor.execute("update taskdb.tasktable set number = number + 500 where name = %s ", (get_name, ))
+        mydb.commit()
+        return jsonify(str("Updated successfully"))
+
+# Delete something from the record
+@app.route("/delete", methods=['POST'])
+def delete():
+    if request.method=='POST':
+        name_delete = request.json["name_delete"]
+        cursor.execute("Delete from taskdb.tasktable where name = %s ", (name_delete,))
+        mydb.commit()
+        return jsonify(str("Deleted successfully"))
+
+# Fetch data
+@app.route("/fetch", methods=['POST','GET'])
+def fetch_data():
+    cursor.execute("select*from taskdb.tasktable")
+    l=[]
+    for i in cursor.fetchall():
+        l.append(i)
+    return jsonify(str(l))
+
 if __name__ == "__main__":
     app.run()
+
+# Task---- read a file, give complete file path on api side. It should read the file and give a summary of the file
